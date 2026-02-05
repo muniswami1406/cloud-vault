@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Vault</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+  <link rel="stylesheet" href="styles.css"/>
+
+  <!-- Firebase compat version -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div id="loader">
+  <div class="spinner"></div>
+  <h3 id="load-txt" style="margin-top:1rem; color:var(--primary); font-size:1rem;">Loading...</h3>
+</div>
+
+<div id="auth-screen">
+  <div class="auth-card">
+    <h2>Cloud Vault</h2>
+
+    <div id="v-login">
+      <input id="l-u" class="input" placeholder="Username" onkeypress="handleKey(event, 'login')">
+      <div class="pw-wrap">
+        <input id="l-p" class="input" type="password" placeholder="Password" onkeypress="handleKey(event, 'login')">
+        <i class="far fa-eye pw-eye" onclick="togglePW('l-p', this)"></i>
+      </div>
+      <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
+      <div style="margin-top:0.9rem; font-size:0.85rem;">
+        <a href="#" onclick="switchV('reg')" style="color:var(--primary)">Register</a> • 
+        <a href="#" onclick="switchV('forgot')" style="color:var(--muted)">Forgot?</a>
+      </div>
+    </div>
+
+    <div id="v-reg" class="hidden">
+      <input id="r-u" class="input" placeholder="Username" onkeypress="handleKey(event, 'reg')">
+      <div class="pw-wrap">
+        <input id="r-p" class="input" type="password" placeholder="Password" onkeypress="handleKey(event, 'reg')">
+        <i class="far fa-eye pw-eye" onclick="togglePW('r-p', this)"></i>
+      </div>
+      <div class="pw-wrap">
+        <input id="r-k" class="input" type="password" placeholder="Recovery Key" onkeypress="handleKey(event, 'reg')">
+        <i class="far fa-eye pw-eye" onclick="togglePW('r-k', this)"></i>
+      </div>
+      <div class="pw-wrap">
+        <input id="r-show" class="input" type="password" placeholder="View Pass" onkeypress="handleKey(event, 'reg')">
+        <i class="far fa-eye pw-eye" onclick="togglePW('r-show', this)"></i>
+      </div>
+      <div class="pw-wrap">
+        <input id="r-del" class="input" type="password" placeholder="Delete Pass" onkeypress="handleKey(event, 'reg')">
+        <i class="far fa-eye pw-eye" onclick="togglePW('r-del', this)"></i>
+      </div>
+      <button class="btn btn-primary" onclick="handleRegister()">Create</button>
+      <p style="margin-top:0.9rem; cursor:pointer; font-size:0.85rem;" onclick="switchV('login')">← Back</p>
+    </div>
+
+    <div id="v-forgot" class="hidden">
+      <input id="f-u" class="input" placeholder="Username">
+      <div class="pw-wrap">
+        <input id="f-k" class="input" type="password" placeholder="Recovery Key">
+        <i class="far fa-eye pw-eye" onclick="togglePW('f-k', this)"></i>
+      </div>
+      <div class="pw-wrap">
+        <input id="f-n" class="input" type="password" placeholder="New Password">
+        <i class="far fa-eye pw-eye" onclick="togglePW('f-n', this)"></i>
+      </div>
+      <button class="btn btn-gold" onclick="handleReset()">Reset</button>
+      <p style="margin-top:0.9rem; cursor:pointer; font-size:0.85rem;" onclick="switchV('login')">← Back</p>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <nav>
+    <div id="top-user" class="user-badge"></div>
+    <div style="display:flex; gap:0.6rem;">
+      <button id="btn-export" class="btn btn-gold hidden" onclick="exportUsers()">Export</button>
+      <button class="btn btn-danger" onclick="logout()">Out</button>
+    </div>
+  </nav>
+
+  <div id="admin-panel" class="admin-box hidden">
+    <h3 style="color:var(--gold); margin-bottom:0.8rem; font-size:1.1rem;">Admin</h3>
+    <div id="user-list"></div>
+  </div>
+
+  <div id="folders-view">
+    <div style="padding:1rem 4% 0.8rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem;">
+      <h2 id="viewing-label" style="font-size:1.3rem; font-weight:600;">Folders</h2>
+      <button class="btn btn-primary" onclick="createFolder()">+ Folder</button>
+    </div>
+    <div id="folders-grid" class="grid"></div>
+  </div>
+
+  <div id="files-view" class="hidden" style="padding:1rem 4%;">
+    <button class="back-btn" onclick="backToFolders()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+
+    <div class="upload-area">
+      <h3 id="active-folder-name" style="margin-bottom:0.8rem; color:var(--primary); font-size:1.2rem;"></h3>
+      <input type="file" id="file-selector" multiple accept=".pdf,.doc,.docx,.txt,image/*">
+      <button class="btn btn-primary" style="margin-top:0.8rem;" onclick="uploadSync()">Upload</button>
+      <small style="margin-top:0.6rem; display:block;">PDF, docs, images</small>
+    </div>
+
+    <div id="files-grid" class="grid"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
